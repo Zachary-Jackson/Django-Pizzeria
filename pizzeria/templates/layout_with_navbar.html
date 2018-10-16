@@ -4,7 +4,8 @@
   <nav class="navbar navbar-expand-sm navbar-dark bg-secondary fixed-top">
     <div class="container">
 
-      <a class="navbar-brand border rounded border-white" href="{% url 'homepage' %}">Django Pizzeria</a>
+      <a class="navbar-brand border rounded border-white"
+         href="{% url 'homepage' %}">Django Pizzeria</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse"
               data-target="#navbarSupportedContent"
               aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -15,7 +16,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span
+            <a class="nav-link" href="#">Go to top <span
                 class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
@@ -34,3 +35,27 @@
 {% endblock top_navbar %}
 
 {% block body %} {% endblock body %}
+
+{% block footer_navbar %}
+  {#    footer #}
+  <div class="container ">
+    <div class="row py-3 my-3 border-top">
+
+
+      <div class="col-md-7">
+        <a href="#">
+          <button type="button" class="btn btn-secondary mt-2">Django
+            Pizzeria
+          </button>
+        </a>
+      </div>
+
+      <div class="col-md text-md-right mt-2">
+        <small>The finest of cuisines, &copy; Django Pizzeria</small>
+      </div>
+
+    </div>
+
+  </div>
+  {#  /footer#}
+{% endblock footer_navbar %}

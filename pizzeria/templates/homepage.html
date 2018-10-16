@@ -3,6 +3,7 @@
 {% block body %}
   <div class="container pt-4">
 
+    {# Latest Creations #}
     <div class="row pt-4 ">
       <div class="col-sm-4">
         <h1><u>Latest Creations</u></h1>
@@ -18,11 +19,11 @@
           <p class="mb-2">Cleveland, Ohio</p>
           <p>Created 1 hour, 12 minutes ago.</p>
         </div>
-
-
       </div>
+      {# /Latest Creations #}
 
 
+      {# Pizza Menus #}
       <div class="col-sm-7">
         <h1><u>Pizzas</u></h1>
 
@@ -86,9 +87,14 @@
           <p class="mt-2">Ingredients: <br> {% lorem 5 w random %}</p>
         </div>
 
-
       </div>
+      {# /Main Pizzas #}
+
     </div>
+
   </div>
+
+
+
 
 {% endblock body %}
