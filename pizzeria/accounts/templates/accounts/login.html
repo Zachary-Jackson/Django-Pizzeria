@@ -1,0 +1,23 @@
+{% extends 'layout_with_navbar.html' %}
+
+{% block body %}
+  <div class="container text-center">
+
+  <div class="col-sm-6 mx-auto">
+
+          <h1 class="display-2 mt-5">Login</h1>
+    <h5 class="mb-5"><a href="{% url 'accounts:create_account' %}">or create an account</a></h5>
+
+    <form method="POST" class="mb-5">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" class="button-primary" value="Login">
+    </form>
+</div>
+
+  </div>
+{% endblock body %}
+
+
+{# Over-ride the footer_navbar so it will not show#}
+{% block footer_navbar %}{% endblock footer_navbar %}
