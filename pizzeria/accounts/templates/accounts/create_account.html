@@ -3,17 +3,17 @@
 {% block body %}
   <div class="container text-center">
 
-  <div class="col-sm-6 mx-auto">
+    <div class="col-sm-6 mx-auto">
 
-          <h1 class="display-2 mt-5">Create your account!</h1>
-    <h5 class="mb-5"><a href="{% url 'accounts:login' %}">or Login</a></h5>
+      <h1 class="display-2 mt-5">Create your account!</h1>
+      <h5 class="mb-5"><a href="{% url 'accounts:login' %}">or Login</a></h5>
 
-    <form method="POST" class="mb-5">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" class="button-primary" value="Login">
-    </form>
-</div>
+      <form method="POST" class="mb-5">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="button-primary" value="Create">
+      </form>
+    </div>
 
   </div>
 {% endblock body %}

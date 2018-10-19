@@ -13,11 +13,29 @@
   <title>Django Pizzeria</title>
 </head>
 
+
+{# Messages #}
+<div class="container">
+  <div class="row">
+    {% if messages %}
+      <div class="offset-md-5 offset-lg-4 mt-4">
+      <ul class="messages border rounded bg-light mt-2">
+        {% for message in messages %}
+          <li{% if message.tags %}
+            class="{{ message.tags }} mr-2"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    </div>
+  </div>
+</div>
+{# / Messages #}
+
+
 <body style="padding-top: 50px;">
 {% block top_navbar %} {% endblock top_navbar %}
 {% block body %} {% endblock body %}
 </body>
-
 
 
 {% block footer_navbar %} {% endblock footer_navbar %}
