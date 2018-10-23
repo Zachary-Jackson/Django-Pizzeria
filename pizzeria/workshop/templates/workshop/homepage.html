@@ -10,17 +10,15 @@
         <div style="position:fixed">
           <h1><u>Latest Creations</u></h1>
 
-          <div class="border rounded bg-light mt-2">
-            <h3 class="mb-0">Garlic Pizza</h3>
-            <p class="mb-2">Knoxville, Tn</p>
-            <p>Created 2 minutes ago.</p>
-          </div>
-
-          <div class="border rounded bg-light mt-2">
-            <h3 class="mb-0">Mushroom</h3>
-            <p class="mb-2">Cleveland, Ohio</p>
-            <p>Created 1 hour, 12 minutes ago.</p>
-          </div>
+          {% for pizza in latest_pizzas %}
+            <div class="border rounded bg-light mt-2">
+              <h3 class="mb-0">{{ pizza.name }}</h3>
+              <p class="mb-2">{{ pizza.city }}, {{ pizza.state }}</p>
+              <p class="mb-0">{{ pizza.summary|truncatechars:40 }}</p>
+              <p class="mt-0">Created {{ pizza.time_created|timesince }}
+                ago.</p>
+            </div>
+          {% endfor %}
         </div>
       </div>
       {# /Latest Creations #}
@@ -31,20 +29,34 @@
         <h1><u>Pizzas</u></h1>
 
         {% for pizza in pizzas %}
+          {# Cycle will change the classes based on which iteration #}
+          {# the for loop is in#}
           <div
               class="{% cycle 'bg-info rounded' 'bg-secondary rounded text-white' %}">
-            <h3 class="mb-0">{{ pizza }}
-              <div class="btn-group float-right pr-4 pt-1" role="group"
-                   aria-label="Basic example">
-                <button type="button" class="btn btn-light border">{{ pizza.likes }} &#10004
-                </button>
-                <button type="button" class="btn btn-light border">{{ pizza.dislikes }} &#10060
-                </button>
-              </div>
-            </h3>
-            <p class="mb-2">{{ pizza.city }}, {{ pizza.state }}</p>
-            <p class="my-0">Summary: <br> {{ pizza.summary }}</p>
-            <p class="mt-2">Ingredients: <br> {% lorem 5 w random %}</p>
+            <div class="ml-2">
+
+              {# Like & Dislike Buttons #}
+              <h3 class="mb-0 m-1">{{ pizza }}
+                <div class="btn-group float-right pr-4 pt-1" role="group"
+                     aria-label="Basic example">
+                  <a class="btn btn-light border"
+                     href="{% url 'workshop:like_pizza' pk=pizza.id %}"
+                     role="button">
+                    {{ pizza.likes }} &#10004
+                  </a>
+                  <a class="btn btn-light border"
+                     href="{% url 'workshop:dislike_pizza' pk=pizza.id %}"
+                     role="button">
+                    {{ pizza.dislikes }} &#10060
+                  </a>
+                </div>
+              </h3>
+              {# /Like & Dislike Buttons #}
+
+              <p class="mb-2">{{ pizza.city }}, {{ pizza.state }}</p>
+              <p class="my-0">Summary: <br> {{ pizza.summary }}</p>
+              <p class="mt-2">Ingredients: <br> {% lorem 5 w random %}</p>
+            </div>
           </div>
         {% endfor %}
 
