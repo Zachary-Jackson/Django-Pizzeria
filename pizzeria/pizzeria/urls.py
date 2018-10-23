@@ -17,10 +17,8 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 
-from . import views
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.project_homepage, name='homepage'),
-    path('accounts/', include('accounts.urls'), )
+    path('accounts/', include('accounts.urls')),
+    path('', include('workshop.urls')),
 ]

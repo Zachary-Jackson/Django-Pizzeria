@@ -43,7 +43,7 @@ def login_user(request):
 
     :param request: Standard Django request object
     :return if GET request: render 'accounts:login'
-    :return if successful POST request: return redirect 'homepage'
+    :return if successful POST request: return redirect 'workshop:homepage'
     """
     form = AuthenticationForm
 
@@ -55,7 +55,7 @@ def login_user(request):
             user = form.get_user()
             login(request, user)
 
-            return redirect('homepage')
+            return redirect('workshop:homepage')
 
     return render(request, 'accounts/login.html', {'form': form})
 
@@ -66,9 +66,9 @@ def logout_user(request):
     Allows a logged in user to logout
 
     :param request: Standard Django Request object
-    :return: return render redirect 'homepage'
+    :return: return render redirect 'workshop:homepage'
     """
     # Log the user out and redirect them to the homepage
     logout(request)
     messages.success(request, 'You have been logged out')
-    return redirect('homepage')
+    return redirect('workshop:homepage')

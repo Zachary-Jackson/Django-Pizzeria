@@ -96,7 +96,7 @@ class AccountsTests(TestCase):
         )
 
         # We should have been redirected to the site's homepage
-        self.assertRedirects(resp, reverse('homepage'))
+        self.assertRedirects(resp, reverse('workshop:homepage'))
 
     def test_login_user_post_invalid(self):
         """Ensures that a user can be logged in"""
@@ -130,4 +130,4 @@ class AccountsTests(TestCase):
             resp.context['user']
 
         # We should have been redirected to the site's homepage
-        self.assertRedirects(resp, reverse('homepage'))
+        self.assertRedirects(resp, reverse('workshop:homepage'))
