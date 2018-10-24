@@ -14,17 +14,25 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        {# left_side_nav_links #}
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Go to top <span
-                class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="#">Link</a>
-          </li>
+          {% if request.user.is_authenticated %}
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Create a new pizza<span
+                  class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active"
+                 href="{% url 'workshop:create_ingredient' %}">Create
+                Ingredient</a>
+            </li>
+          {% endif %}
         </ul>
+        {# /left_side_nav_links #}
 
 
+        {# right_side_nav_links #}
         {% if request.user.is_authenticated %}
           <ul class="navbar-nav">
             <li class="nav-item active">
@@ -42,6 +50,7 @@
             </li>
           </ul>
         {% endif %}
+        {# /right_side_nav_links #}
 
       </div>
     </div>

@@ -4,19 +4,14 @@
   <div class="container text-center">
 
     <div class="col-sm-7 mx-auto">
-
-      <h1 class="display-2 mt-5">Login</h1>
-      <h5 class="mb-5">
-        <a href="{% url 'accounts:create_account' %}">
-          or create an account
-        </a>
-      </h5>
+      <h1 class="display-2 my-5">New Ingredient</h1>
 
       <form method="POST" class="mb-5">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" class="button-primary" value="Login">
+        <input type="submit" class="button-primary" value="Create">
       </form>
+
     </div>
 
   </div>

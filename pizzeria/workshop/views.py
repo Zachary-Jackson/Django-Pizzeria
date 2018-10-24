@@ -1,6 +1,8 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
+from .forms import IngredientForm
 from .models import Pizza
 
 
@@ -23,6 +25,44 @@ def workshop_homepage(request):
 
         # Send the all_pizza and latest_pizza queryset to the template
         {'pizzas': all_pizzas, 'latest_pizzas': latest_pizzas}
+    )
+
+
+@login_required
+def create_ingredient(request):
+    """
+    Allows a user to submit a form to create an Ingredient object
+
+    :param request: Standard Django Request Object
+    :return if GET request: render 'workshop:create_ingredient'
+    :return if successful POST: same as GET, but create an Ingredient
+    """
+
+    form = IngredientForm()
+
+    if request.POST:
+
+        # Get the form information from the POST request
+        form = IngredientForm(data=request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            # Create a message telling the user their Ingredient was created
+            ingredient_name = form.cleaned_data['name']
+            messages.success(
+                request,
+                f'A new ingredient {ingredient_name} was created!'
+            )
+
+            # By reinstating the form here, we can clear the form from a prior
+            # submission. This makes it easy to create many Ingredients.
+            form = IngredientForm()
+
+    return render(
+        request,
+        'workshop/create_ingredient.html',
+        {'form': form}
     )
 
 

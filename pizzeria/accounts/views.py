@@ -13,7 +13,8 @@ def create_account(request):
 
     :param request: Standard Django request object
     :return if GET request: render 'accounts/create_account.html'
-    :return if successful POST: return redirect 'accounts:create_account'
+    :return if successful POST:
+        Create User and return redirect 'accounts:create_account'
     """
     form = UserCreationForm
 
@@ -43,7 +44,8 @@ def login_user(request):
 
     :param request: Standard Django request object
     :return if GET request: render 'accounts:login'
-    :return if successful POST request: return redirect 'workshop:homepage'
+    :return if successful POST request:
+        Login User and return redirect 'workshop:homepage'
     """
     form = AuthenticationForm
 
@@ -66,7 +68,7 @@ def logout_user(request):
     Allows a logged in user to logout
 
     :param request: Standard Django Request object
-    :return: return render redirect 'workshop:homepage'
+    :return: Logout User and return render redirect 'workshop:homepage'
     """
     # Log the user out and redirect them to the homepage
     logout(request)
