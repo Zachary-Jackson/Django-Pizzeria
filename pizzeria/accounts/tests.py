@@ -71,7 +71,7 @@ class AccountsTests(TestCase):
         # Ensure that we have not created a user
         self.assertEqual(len(User.objects.all()), 1)
 
-    def test_login_user_get(self):
+    def test_login_get(self):
         """Ensures that login_user shows the correct information"""
 
         with self.assertTemplateUsed('accounts/login.html'):
@@ -82,7 +82,7 @@ class AccountsTests(TestCase):
         self.assertContains(resp, 'or create an account')
         self.assertContains(resp, 'Username')
 
-    def test_login_user_post(self):
+    def test_login_post(self):
         """Ensures that a user can be logged in"""
 
         # Create data to POST to the server
@@ -98,7 +98,7 @@ class AccountsTests(TestCase):
         # We should have been redirected to the site's homepage
         self.assertRedirects(resp, reverse('workshop:homepage'))
 
-    def test_login_user_post_invalid(self):
+    def test_login_user_invalid(self):
         """Ensures that a user can be logged in"""
 
         # Create data to POST to the server
@@ -116,7 +116,7 @@ class AccountsTests(TestCase):
             resp, 'Please enter a correct username and password.'
         )
 
-    def test_logout_user(self):
+    def test_logout(self):
         """Ensures that a user can log out"""
 
         # Log in the test user
