@@ -11,6 +11,11 @@ urlpatterns = [
         views.create_ingredient,
         name='create_ingredient'
     ),
+    path(
+        'create_pizza/',
+        views.create_pizza,
+        name='create_pizza'
+    ),
     path('dislike_pizza/<int:pk>', views.dislike_pizza, name='dislike_pizza'),
     path('like_pizza/<int:pk>', views.like_pizza, name='like_pizza'),
 ]

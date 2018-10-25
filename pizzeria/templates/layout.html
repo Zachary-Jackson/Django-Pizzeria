@@ -19,7 +19,7 @@
         <ul class="navbar-nav mr-auto">
           {% if request.user.is_authenticated %}
             <li class="nav-item active">
-              <a class="nav-link" href="#">Create a new pizza<span
+              <a class="nav-link" href="{% url 'workshop:create_pizza' %}">Create a new pizza<span
                   class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">

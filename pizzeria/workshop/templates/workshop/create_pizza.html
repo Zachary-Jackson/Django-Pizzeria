@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="container text-center">
+
+    {# header #}
+    <div class="col-sm-7 mx-auto">
+      <h1 class="display-2 mt-5">Create Pizza</h1>
+      <h5 class="mb-5">
+        <a href="{% url 'workshop:create_ingredient' %}">or Ingredient</a>
+      </h5>
+    </div>
+    {# /header #}
+
+    <form method="POST" class="mb-5">
+      {% csrf_token %}
+
+      {# Here we can render the form manualy #}
+
+      {# name #}
+      <div class="col-sm">
+        {{ form.name.label_tag }}{{ form.name }}
+      </div>
+      {# /name #}
+
+      {# city_state #}
+      <div class="col-sm mb-4">
+        {{ form.city.label_tag }}{{ form.city }}
+        {{ form.state }}
+      </div>
+      {# /city_state #}
+
+      {# crust_ingredients #}
+      <div class="col-sm">
+        {{ form.crust.label_tag }}{{ form.crust }}
+        <div class="ml-4">
+          {{ form.ingredients.label_tag }}{{ form.ingredients }}
+        </div>
+      </div>
+      {# /crust_ingredients #}
+
+      <div class="col-sm">
+        <div class="mt-4 mb-2">
+          {{ form.summary.label_tag }}{{ form.summary }}
+        </div>
+      </div>
+
+
+      <input type="submit" class="btn btn-primary" value="Create">
+    </form>
+
+
+  </div>
+{% endblock body %}
+
+
+{# Over-ride the footer_navbar so it will not show#}
+{% block footer_navbar %}{% endblock footer_navbar %}

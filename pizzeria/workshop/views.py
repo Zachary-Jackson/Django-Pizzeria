@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
-from .forms import IngredientForm
+from .forms import IngredientForm, PizzaForm
 from .models import Pizza
 
 
@@ -59,11 +59,30 @@ def create_ingredient(request):
             # submission. This makes it easy to create many Ingredients.
             form = IngredientForm()
 
-    return render(
-        request,
-        'workshop/create_ingredient.html',
-        {'form': form}
-    )
+    return render(request, 'workshop/create_ingredient.html', {'form': form})
+
+
+@login_required
+def create_pizza(request):
+    """
+    Allows a user to submit a form to create a Pizza object
+
+    :param request: Standard Django Request Object
+    :return if GET request: render 'workshop:create_pizza'
+    :return if successful POST:
+        Create a Pizza object and redirect to 'workshop:homepage'
+    """
+
+    form = PizzaForm()
+
+    if request.POST:
+        form = PizzaForm(data=request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('workshop:homepage')
+
+    return render(request, 'workshop/create_pizza.html', {'form': form})
 
 
 @login_required

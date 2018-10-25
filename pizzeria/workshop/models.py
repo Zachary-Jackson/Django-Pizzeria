@@ -23,13 +23,13 @@ class Pizza(models.Model):
     state = models.CharField(max_length=2)
 
     # Media status
-    likes = models.IntegerField()
-    dislikes = models.IntegerField()
+    likes = models.IntegerField(blank=True, default=0)
+    dislikes = models.IntegerField(blank=True, default=0)
 
     # Pizza properties
     crust = models.CharField(max_length=20)
     ingredients = models.ManyToManyField('Ingredient')
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40, unique=True)
 
     # Miscellaneous
     summary = models.CharField(max_length=200)
