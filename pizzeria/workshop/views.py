@@ -13,7 +13,6 @@ def workshop_homepage(request):
     :param request: Standard Django request object
     :return: Render 'workshop:homepage.html'
     """
-
     all_pizzas = Pizza.objects.all()
 
     # Sort all_pizzas by the newest time created and grab the first two
@@ -37,7 +36,6 @@ def create_ingredient(request):
     :return if GET request: render 'workshop:create_ingredient'
     :return if successful POST: same as GET, but create an Ingredient
     """
-
     form = IngredientForm()
 
     if request.POST:
@@ -72,7 +70,6 @@ def create_pizza(request):
     :return if successful POST:
         Create a Pizza object and redirect to 'workshop:homepage'
     """
-
     form = PizzaForm()
 
     if request.POST:
@@ -94,7 +91,6 @@ def delete_pizza(request, pk: int):
     :param pk: Primary key for a Pizza object
     :return: Delete Pizza and redirect to 'workshop:homepage'
     """
-
     pizza = Pizza.objects.get(pk=pk)
 
     # Create delete message
@@ -118,7 +114,6 @@ def dislike_pizza(request, pk: int):
     :param pk: The PK value of a Pizza Object
     :return: redirect to 'workshop:homepage'
     """
-
     pizza = Pizza.objects.get(pk=pk)
 
     # Add one to the Pizza's dislikes and save it
@@ -137,7 +132,6 @@ def like_pizza(request, pk: int):
     :param pk: The PK value of a Pizza Object
     :return: redirect to 'workshop:homepage'
     """
-
     pizza = Pizza.objects.get(pk=pk)
 
     # Add one to the Pizza's likes and save it
@@ -155,7 +149,6 @@ def view_pizza(request, pk: int):
     :param pk: Primary key for Pizza object
     :return: render 'workshop/view_pizza.html'
     """
-
     pizza = Pizza.objects.get(pk=pk)
 
     return render(request, 'workshop/view_pizza.html', {'pizza': pizza})

@@ -4,8 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import redirect, render
 
-# Create your views here.
-
 
 def create_account(request):
     """

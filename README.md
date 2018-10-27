@@ -15,6 +15,12 @@ will run all of the migrations for the project and initialize the database.
 There are some custom migrations in place that will create some "starter"
 pizzas and ingredients for you automatically.
 
+3) To run the project type in `python manage.py runserver`
+
+4) If you want to create a `superuser` so you can play around with the admin,
+use the command `python manage.py createsuperuser` then go to
+`localhost:8000/admin`.
+
 ## Main Directories / Application information
 
 1) accounts -- This Django App controls all of the User activity. Allowing the
