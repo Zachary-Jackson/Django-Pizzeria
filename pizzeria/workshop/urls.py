@@ -16,6 +16,7 @@ urlpatterns = [
         views.create_pizza,
         name='create_pizza'
     ),
+    path('delete/<int:pk>', views.delete_pizza, name='delete_pizza'),
     path('dislike_pizza/<int:pk>', views.dislike_pizza, name='dislike_pizza'),
     path('like_pizza/<int:pk>', views.like_pizza, name='like_pizza'),
     path('view/<int:pk>', views.view_pizza, name='view_pizza'),

@@ -86,6 +86,30 @@ def create_pizza(request):
 
 
 @login_required
+def delete_pizza(request, pk: int):
+    """
+    Deletes a pizza and returns the user to the main menu
+
+    :param request: Standard Django request object
+    :param pk: Primary key for a Pizza object
+    :return: Delete Pizza and redirect to 'workshop:homepage'
+    """
+
+    pizza = Pizza.objects.get(pk=pk)
+
+    # Create delete message
+    pizza_name = pizza.name
+    messages.success(
+        request,
+        f'{pizza_name} was deleted.'
+    )
+
+    pizza.delete()
+
+    return redirect('workshop:homepage')
+
+
+@login_required
 def dislike_pizza(request, pk: int):
     """
     Increments by one, the dislikes associated with a pizza
@@ -127,9 +151,9 @@ def view_pizza(request, pk: int):
     """
     Allows a user to view a particular pizza
 
-    :param request:
-    :param pk:
-    :return:
+    :param request: Standard Django Request object
+    :param pk: Primary key for Pizza object
+    :return: render 'workshop/view_pizza.html'
     """
 
     pizza = Pizza.objects.get(pk=pk)
