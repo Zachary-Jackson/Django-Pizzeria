@@ -122,3 +122,16 @@ def like_pizza(request, pk: int):
 
     return redirect('workshop:homepage')
 
+
+def view_pizza(request, pk: int):
+    """
+    Allows a user to view a particular pizza
+
+    :param request:
+    :param pk:
+    :return:
+    """
+
+    pizza = Pizza.objects.get(pk=pk)
+
+    return render(request, 'workshop/view_pizza.html', {'pizza': pizza})

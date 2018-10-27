@@ -36,7 +36,12 @@
             <div class="ml-2">
 
               {# Like & Dislike Buttons #}
-              <h3 class="mb-0 m-1">{{ pizza }}
+              <h3 class="mb-0 m-1">
+
+                <a href="{% url 'workshop:view_pizza' pk=pizza.id %}"
+                   style="{% cycle 'color: black;' 'color: white' %}">{{ pizza }}</a>
+
+
                 <div class="btn-group float-right pr-4 pt-1" role="group"
                      aria-label="Basic example">
                   <a class="btn btn-light border"
