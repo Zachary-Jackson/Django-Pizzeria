@@ -7,6 +7,11 @@ app_name = 'workshop'
 urlpatterns = [
     path('', views.workshop_homepage, name='homepage'),
     path(
+        'sorted_by/<str:sorted_by>',
+        views.workshop_homepage_sorted,
+        name='homepage_sorted'
+    ),
+    path(
         'create_ingredient/',
         views.create_ingredient,
         name='create_ingredient'

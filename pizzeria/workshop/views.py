@@ -6,6 +6,24 @@ from .forms import IngredientForm, PizzaForm
 from .models import Pizza
 
 
+def create_searching_by_message(searching_by: str):
+    """
+    Creates a message informing the user how something is being searched
+
+    :param searching_by: A string saying how something is searched
+    :return:
+        A title cased string in the format of 'Searching: {searching_by}' minus
+        any `-` characters
+    """
+    # remove any `-` characters and title case
+    formatted_string = searching_by.replace('-', '').title()
+
+    return f'Searching: {formatted_string}'
+
+
+""" Views """
+
+
 def workshop_homepage(request):
     """
     The main homepage for the pizzeria project
@@ -24,6 +42,35 @@ def workshop_homepage(request):
 
         # Send the all_pizza and latest_pizza queryset to the template
         {'pizzas': all_pizzas, 'latest_pizzas': latest_pizzas}
+    )
+
+
+def workshop_homepage_sorted(request, sorted_by: str):
+    """
+    Allows the main homepage to be sorted by various conditions
+
+    :param request: Standard Django request object
+    :param sorted_by: A string describing how the user wants to sort the Pizzas
+    :return: Render 'workshop:homepage.html'
+    """
+    all_pizzas_query = Pizza.objects.all()
+
+    # Sort all_pizzas_query based upon the sort_by parameter
+    all_pizzas = all_pizzas_query.order_by(sorted_by)
+
+    latest_pizzas = all_pizzas_query.order_by('-time_created')[:2]
+    searching_by_message = create_searching_by_message(sorted_by)
+
+    return render(
+        request,
+        'workshop/homepage.html',
+
+        # Send the all_pizza and latest_pizza queryset to the template
+        {
+            'pizzas': all_pizzas,
+            'latest_pizzas': latest_pizzas,
+            'searching_by_message': searching_by_message
+        }
     )
 
 
@@ -85,7 +132,7 @@ def create_pizza(request):
 @login_required
 def delete_pizza(request, pk: int):
     """
-    Deletes a pizza and returns the user to the main menu
+    Deletes a pizza and returns the user to the homepage
 
     :param request: Standard Django request object
     :param pk: Primary key for a Pizza object

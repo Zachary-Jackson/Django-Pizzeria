@@ -26,7 +26,42 @@
 
       {# Pizza Menus #}
       <div class="col-md-7 col-lg-8">
-        <h1><u>Pizzas</u></h1>
+        <h1>
+          {# searching_by_message is an optionable variable telling the user that #}
+          {# the results are being searched#}
+          {% if searching_by_message %}
+            {{ searching_by_message }}
+          {% else %}
+            <u>Pizzas</u>
+          {% endif %}
+
+          <div class="dropdown float-right">
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+              Sort By
+            </button>
+
+            {# dropdown_sort_menu #}
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item"
+                 href="{% url 'workshop:homepage_sorted' sorted_by='state' %}">
+                State
+              </a>
+              <a class="dropdown-item"
+                 href="{% url 'workshop:homepage_sorted' sorted_by='-likes' %}">
+                Likes
+              </a>
+              <a class="dropdown-item"
+                 href="{% url 'workshop:homepage_sorted' sorted_by='-dislikes' %}">
+                Dislikes
+              </a>
+            </div>
+            {# /dropdown_sort_menu #}
+
+          </div>
+
+        </h1>
 
         {% for pizza in pizzas %}
           {# Cycle will change the classes based on which iteration #}
@@ -60,7 +95,9 @@
 
               <p class="mb-2">{{ pizza.city }}, {{ pizza.state }}</p>
               <p class="my-0">Summary: <br> {{ pizza.summary }}</p>
-              <p class="mt-2">Ingredients: <br> {% lorem 5 w random %}</p>
+              <p class="mt-2">
+                Ingredients: <br> {{ pizza.ingredients.all|join:", " }}
+              </p>
             </div>
           </div>
         {% endfor %}

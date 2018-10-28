@@ -29,7 +29,7 @@ user to login, logout, and signup for an account
 2) pizzeria -- All of the backend settings live here
 
 3) static -- All of the "global" project wide static files
-(CSS, JavaScript, Images) live here. This is virtually empty for this project.
+(CSS, JavaScript, Images) live here.
 
 4) templates -- All project wide templates reside in the `templates` directory.
 Often times the main "layout.html" resides here
@@ -42,7 +42,7 @@ delete, and like pizzas. (Among other things)
 
 1) admin.py -- This file allows models to be registered with the Admin
 Panel. From the Admin Panel objects can be updated as desired. (Say adding
-Onions to a pizza)
+Onions to a Pizza)
 
 2) apps.py -- Application specific information like the name goes here
 
@@ -53,7 +53,7 @@ views or with the Admin
 defined and expressed here. The Pizza model, for instance, allows Django to
 create and update Database tables for the Pizza object holding attributes like
 `name`. In order to update the database with a change to a Model use the
-command `python manage.py makemigrations [applicatoin name]`, then run the
+command `python manage.py makemigrations [application name]`, then run the
 migrations with `python manage.py migrate`.
 
 5) test.py -- Unit Testing for an application reside here. All project tests
