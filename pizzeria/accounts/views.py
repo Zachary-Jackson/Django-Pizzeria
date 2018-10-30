@@ -50,7 +50,6 @@ def login_user(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-
             # Get the user and log them in
             user = form.get_user()
             login(request, user)

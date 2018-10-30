@@ -1,3 +1,10 @@
+"""
+Form and model tests are not required here, because the forms/models
+are standard Django forms and models outside of this project's
+responsibility
+"""
+
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
@@ -20,7 +27,6 @@ class AccountsTests(TestCase):
 
         # Check if the correct template was used
         with self.assertTemplateUsed('accounts/create_account.html'):
-
             # Create a response object from information given by the server
             resp = self.client.get(reverse('accounts:create_account'))
 

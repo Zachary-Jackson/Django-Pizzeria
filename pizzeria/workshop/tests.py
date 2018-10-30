@@ -18,17 +18,17 @@ class WorkShopTests(TestCase):
         )
 
         # Create some ingredients for testing
-        self.ingredient = Ingredient.objects.create(name='olives')
-        self.ingredient_2 = Ingredient.objects.create(name='peperoni')
+        self.ingredient = Ingredient.objects.create(name='Olives')
+        self.ingredient_2 = Ingredient.objects.create(name='Peperoni')
 
         self.pizza = Pizza.objects.create(
             city='Knoxville',
             state='TN',
             likes=5,
             dislikes=1,
-            crust='thin',
+            crust='Thin',
             name='The Knoxvillian',
-            summary='The Knoxville style pizza.'
+            summary='The Knoxville style pizza.',
         )
 
         # M2M objects must be added after creation
@@ -39,7 +39,6 @@ class WorkShopTests(TestCase):
 
         # Check if the correct template was used
         with self.assertTemplateUsed('workshop/homepage.html'):
-
             # Create a response object from information given by the server
             resp = self.client.get(reverse('workshop:homepage'))
 
@@ -89,4 +88,102 @@ class WorkShopTests(TestCase):
         # The user should have been redirected
         self.assertRedirects(resp, reverse('workshop:homepage'))
 
+    def test_create_ingredient_get(self):
+        """Checks that create_ingredient looks correctly"""
 
+        self.client.login(username='test_user', password='test_password')
+
+        with self.assertTemplateUsed('workshop/create_ingredient.html'):
+            resp = self.client.get(reverse('workshop:create_ingredient'))
+
+        # Checks that the page and form looks good
+        self.assertContains(resp, 'New Ingredient')
+        self.assertContains(resp, 'Name')
+        self.assertContains(resp, 'Create')
+
+    def test_create_ingredient_post(self):
+        """Ensures that the user can create an Ingredient"""
+
+        self.client.login(username='test_user', password='test_password')
+
+        # Create data to POST to the server
+        post_data = {
+            'name': 'Jelly Bean',
+        }
+        self.client.post(
+            reverse('workshop:create_ingredient'),
+            data=post_data
+        )
+
+        # Check the last Ingredient object to see if it matches the POSTed data
+        ingredient = Ingredient.objects.last()
+        self.assertEqual('Jelly Bean', ingredient.name)
+
+    def test_create_pizza_get(self):
+        """Checks that create_pizza looks correctly"""
+
+        self.client.login(username='test_user', password='test_password')
+
+        with self.assertTemplateUsed('workshop/create_pizza.html'):
+            resp = self.client.get(reverse('workshop:create_pizza'))
+
+        # Checks that the page looks good
+        self.assertContains(resp, 'Create Pizza')
+        self.assertContains(resp, 'or Ingredient')
+        self.assertContains(resp, 'Create')
+
+    def test_create_pizza_post(self):
+        """Ensures that the user can create a Pizza"""
+
+        self.client.login(username='test_user', password='test_password')
+
+        # Create data to POST to the server
+        post_data = {
+            'name': 'Black olive and pepperoni',
+            'city': 'Olive',
+            'state': 'NY',
+            'crust': 'thin',
+            'ingredients': [1, 2],  # Many to Many fields get added by ID
+            'summary': 'Is this a real town?'
+        }
+        resp = self.client.post(
+            reverse('workshop:create_pizza'),
+            data=post_data
+        )
+
+        # Check the last Ingredient object to see if it matches the POSTed data
+        pizza = Pizza.objects.last()
+        self.assertEqual('Black olive and pepperoni', pizza.name)
+
+        # The user should have been redirected
+        self.assertRedirects(resp, reverse('workshop:homepage'))
+
+    def test_delete_pizza(self):
+        """Checks if a user can delete a pizza"""
+
+        self.client.login(username='test_user', password='test_password')
+
+        resp = self.client.get(
+            reverse('workshop:delete_pizza', kwargs={'pk': 1})
+        )
+
+        # Ensure that no Pizzas are in the database
+        self.assertEqual(0, len(Pizza.objects.all()))
+
+        # The user should have been redirect to the homepage
+        self.assertRedirects(resp, reverse('workshop:homepage'))
+
+    def test_view_pizza_get(self):
+        """Checks how the page looks for a user"""
+
+        resp = self.client.get(
+            reverse('workshop:view_pizza', kwargs={'pk': 1})
+        )
+
+        # All of the Pizza information should have been loaded to the page
+        self.assertContains(resp, 'Knoxville, TN')
+        self.assertContains(resp, 'Summary: The Knoxville style pizza.')
+        self.assertContains(resp, 'Crust: Thin')
+        self.assertContains(resp, 'Ingredients: Olives, Peperoni')
+        self.assertContains(resp, 'Likes: 5')
+        self.assertContains(resp, 'Dislikes: 1')

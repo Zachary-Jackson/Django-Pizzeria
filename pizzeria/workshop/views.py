@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import IngredientForm, PizzaForm
 from .models import Pizza
@@ -19,6 +20,21 @@ def create_searching_by_message(searching_by: str):
     formatted_string = searching_by.replace('-', '').title()
 
     return f'Searching: {formatted_string}'
+
+
+def validate_sorted_by_string_or_404(sorted_by: str):
+    """
+    Ensures that searching_by is a valid option
+
+    :param sorted_by: A string saying how something is searched
+    :return if valid: boolean stating True
+    :return if False: HTTP 404
+    """
+    valid_options = ['state', '-likes', '-dislikes']
+
+    if sorted_by in valid_options:
+        return True
+    raise Http404('The search requested can not be found.')
 
 
 """ Views """
@@ -51,8 +67,11 @@ def workshop_homepage_sorted(request, sorted_by: str):
 
     :param request: Standard Django request object
     :param sorted_by: A string describing how the user wants to sort the Pizzas
-    :return: Render 'workshop:homepage.html'
+    :return if valid: Render 'workshop:homepage.html'
     """
+    # Ensure that the sorted by string is correct or raise 404
+    validate_sorted_by_string_or_404(sorted_by)
+
     all_pizzas_query = Pizza.objects.all()
 
     # Sort all_pizzas_query based upon the sort_by parameter
@@ -138,7 +157,7 @@ def delete_pizza(request, pk: int):
     :param pk: Primary key for a Pizza object
     :return: Delete Pizza and redirect to 'workshop:homepage'
     """
-    pizza = Pizza.objects.get(pk=pk)
+    pizza = get_object_or_404(Pizza, pk=pk)
 
     # Create delete message
     pizza_name = pizza.name
@@ -161,7 +180,7 @@ def dislike_pizza(request, pk: int):
     :param pk: The PK value of a Pizza Object
     :return: redirect to 'workshop:homepage'
     """
-    pizza = Pizza.objects.get(pk=pk)
+    pizza = get_object_or_404(Pizza, pk=pk)
 
     # Add one to the Pizza's dislikes and save it
     pizza.dislikes += 1
@@ -179,7 +198,7 @@ def like_pizza(request, pk: int):
     :param pk: The PK value of a Pizza Object
     :return: redirect to 'workshop:homepage'
     """
-    pizza = Pizza.objects.get(pk=pk)
+    pizza = get_object_or_404(Pizza, pk=pk)
 
     # Add one to the Pizza's likes and save it
     pizza.likes += 1
@@ -196,6 +215,6 @@ def view_pizza(request, pk: int):
     :param pk: Primary key for Pizza object
     :return: render 'workshop/view_pizza.html'
     """
-    pizza = Pizza.objects.get(pk=pk)
+    pizza = get_object_or_404(Pizza, pk=pk)
 
     return render(request, 'workshop/view_pizza.html', {'pizza': pizza})
