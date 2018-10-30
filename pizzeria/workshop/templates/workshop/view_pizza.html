@@ -69,16 +69,21 @@
       </div>
       {# /pizza_likes_dislikes_time_created #}
 
-      {# delete_button #}
+      {# delete_edit_buttons #}
       {% if request.user.is_authenticated %}
         <div class="col-sm my-3 border-top border-dark pt-4">
-          <button type="button" class="btn btn-danger" data-toggle="modal"
+          <a class="btn btn-dark border border-warning"
+             href="{% url 'workshop:update_pizza' pk=pizza.pk %}">
+            Edit Pizza
+          </a>
+          <button type="button" class="btn btn-danger float-right"
+                  data-toggle="modal"
                   data-target="#deleteModal">
             Delete
           </button>
         </div>
       {% endif %}
-      {# /delete_button #}
+      {# /delete_edit_buttons #}
 
     </div>
     {# /main_content #}

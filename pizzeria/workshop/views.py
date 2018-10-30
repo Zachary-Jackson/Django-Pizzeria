@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import UpdateView
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -205,6 +207,13 @@ def like_pizza(request, pk: int):
     pizza.save()
 
     return redirect('workshop:homepage')
+
+
+class UpdatePizza(LoginRequiredMixin, UpdateView):
+    """Allows a user to update a Pizza object"""
+    model = Pizza
+    form_class = PizzaForm
+    template_name = 'workshop/update_pizza.html'
 
 
 def view_pizza(request, pk: int):

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Ingredient(models.Model):
@@ -34,6 +35,10 @@ class Pizza(models.Model):
     # Miscellaneous
     summary = models.CharField(max_length=200)
     time_created = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        """Determines where a Pizza object's 'homepage' is"""
+        return reverse('workshop:view_pizza', args=(self.id,))
 
     def __str__(self):
         """

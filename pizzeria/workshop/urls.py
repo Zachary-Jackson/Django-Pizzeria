@@ -24,5 +24,10 @@ urlpatterns = [
     path('delete/<int:pk>', views.delete_pizza, name='delete_pizza'),
     path('dislike_pizza/<int:pk>', views.dislike_pizza, name='dislike_pizza'),
     path('like_pizza/<int:pk>', views.like_pizza, name='like_pizza'),
+    path(
+        'update_pizza/<int:pk>',
+        views.UpdatePizza.as_view(),
+        name='update_pizza'
+    ),
     path('view/<int:pk>', views.view_pizza, name='view_pizza'),
 ]
