@@ -8,91 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import IngredientForm, PizzaForm
 from .models import Pizza
 
-
-def create_searching_by_message(searching_by: str):
-    """
-    Creates a message informing the user how something is being searched
-
-    :param searching_by: A string saying how something is searched
-    :return:
-        A title cased string in the format of 'Searching: {searching_by}' minus
-        any `-` characters
-    """
-    # remove any `-` characters and title case
-    formatted_string = searching_by.replace('-', '').title()
-
-    return f'Searching: {formatted_string}'
-
-
-def validate_sorted_by_string_or_404(sorted_by: str):
-    """
-    Ensures that searching_by is a valid option
-
-    :param sorted_by: A string saying how something is searched
-    :return if valid: boolean stating True
-    :return if False: HTTP 404
-    """
-    valid_options = ['state', '-likes', '-dislikes']
-
-    if sorted_by in valid_options:
-        return True
-    raise Http404('The search requested can not be found.')
-
-
 """ Views """
-
-
-def workshop_homepage(request):
-    """
-    The main homepage for the pizzeria project
-
-    :param request: Standard Django request object
-    :return: Render 'workshop:homepage.html'
-    """
-    all_pizzas = Pizza.objects.all()
-
-    # Sort all_pizzas by the newest time created and grab the first two
-    latest_pizzas = all_pizzas.order_by('-time_created')[:2]
-
-    return render(
-        request,
-        'workshop/homepage.html',
-
-        # Send the all_pizza and latest_pizza queryset to the template
-        {'pizzas': all_pizzas, 'latest_pizzas': latest_pizzas}
-    )
-
-
-def workshop_homepage_sorted(request, sorted_by: str):
-    """
-    Allows the main homepage to be sorted by various conditions
-
-    :param request: Standard Django request object
-    :param sorted_by: A string describing how the user wants to sort the Pizzas
-    :return if valid: Render 'workshop:homepage.html'
-    """
-    # Ensure that the sorted by string is correct or raise 404
-    validate_sorted_by_string_or_404(sorted_by)
-
-    all_pizzas_query = Pizza.objects.all()
-
-    # Sort all_pizzas_query based upon the sort_by parameter
-    all_pizzas = all_pizzas_query.order_by(sorted_by)
-
-    latest_pizzas = all_pizzas_query.order_by('-time_created')[:2]
-    searching_by_message = create_searching_by_message(sorted_by)
-
-    return render(
-        request,
-        'workshop/homepage.html',
-
-        # Send the all_pizza and latest_pizza queryset to the template
-        {
-            'pizzas': all_pizzas,
-            'latest_pizzas': latest_pizzas,
-            'searching_by_message': searching_by_message
-        }
-    )
 
 
 @login_required
@@ -188,6 +104,9 @@ def dislike_pizza(request, pk: int):
     pizza.dislikes += 1
     pizza.save()
 
+    # Create success message
+    create_and_apply_liked_disliked_message(request, pizza.name, False)
+
     return redirect('workshop:homepage')
 
 
@@ -205,6 +124,9 @@ def like_pizza(request, pk: int):
     # Add one to the Pizza's likes and save it
     pizza.likes += 1
     pizza.save()
+
+    # Create success message
+    create_and_apply_liked_disliked_message(request, pizza.name, True)
 
     return redirect('workshop:homepage')
 
@@ -227,3 +149,106 @@ def view_pizza(request, pk: int):
     pizza = get_object_or_404(Pizza, pk=pk)
 
     return render(request, 'workshop/view_pizza.html', {'pizza': pizza})
+
+
+def workshop_homepage(request):
+    """
+    The main homepage for the pizzeria project
+
+    :param request: Standard Django request object
+    :return: Render 'workshop:homepage.html'
+    """
+    all_pizzas = Pizza.objects.all()
+
+    # Sort all_pizzas by the newest time created and grab the first two
+    latest_pizzas = all_pizzas.order_by('-time_created')[:2]
+
+    return render(
+        request,
+        'workshop/homepage.html',
+
+        # Send the all_pizza and latest_pizza queryset to the template
+        {'pizzas': all_pizzas, 'latest_pizzas': latest_pizzas}
+    )
+
+
+def workshop_homepage_sorted(request, sorted_by: str):
+    """
+    Allows the main homepage to be sorted by various conditions
+
+    :param request: Standard Django request object
+    :param sorted_by: A string describing how the user wants to sort the Pizzas
+    :return if valid: Render 'workshop:homepage.html'
+    """
+    # Ensure that the sorted by string is correct or raise 404
+    validate_sorted_by_string_or_404(sorted_by)
+
+    all_pizzas_query = Pizza.objects.all()
+
+    # Sort all_pizzas_query based upon the sort_by parameter
+    all_pizzas = all_pizzas_query.order_by(sorted_by)
+
+    latest_pizzas = all_pizzas_query.order_by('-time_created')[:2]
+    searching_by_message = create_searching_by_message(sorted_by)
+
+    return render(
+        request,
+        'workshop/homepage.html',
+
+        # Send the all_pizza and latest_pizza queryset to the template
+        {
+            'pizzas': all_pizzas,
+            'latest_pizzas': latest_pizzas,
+            'searching_by_message': searching_by_message
+        }
+    )
+
+
+"""Functions"""
+
+
+def create_and_apply_liked_disliked_message(request, name: str, liked: bool):
+    """
+    Creates a django message and applies it
+
+    :param request: Standard Django request object
+    :param name: The name of the liked/disliked object
+    :param liked: Whether or not the object was liked or disliked
+    """
+
+    if liked:
+        message = f'You have liked the Pizza: {name}.'
+    else:
+        message = f'{name}: has been disliked.'
+
+    messages.success(request, message)
+
+
+def create_searching_by_message(searching_by: str):
+    """
+    Creates a message informing the user how something is being searched
+
+    :param searching_by: A string saying how something is searched
+    :return:
+        A title cased string in the format of 'Searching: {searching_by}' minus
+        any `-` characters
+    """
+    # remove any `-` characters and title case
+    formatted_string = searching_by.replace('-', '').title()
+
+    return f'Searching: {formatted_string}'
+
+
+def validate_sorted_by_string_or_404(sorted_by: str):
+    """
+    Ensures that searching_by is a valid option
+
+    :param sorted_by: A string saying how something is searched
+    :return if valid: boolean stating True
+    :return if False: HTTP 404
+    """
+    valid_options = ['state', '-likes', '-dislikes']
+
+    if sorted_by in valid_options:
+        return True
+    raise Http404('The search requested can not be found.')

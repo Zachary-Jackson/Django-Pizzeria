@@ -2,6 +2,20 @@ from django.db import models
 from django.urls import reverse
 
 
+class Crust(models.Model):
+    """Model representing a Pizza's Crust"""
+
+    type = models.CharField(max_length=30, unique=True)
+
+    def __str__(self):
+        """
+        Defines how a Crust object is displayed
+
+        :return: The Crust's type attribute
+        """
+        return self.type
+
+
 class Ingredient(models.Model):
     """Ingredients for some sort of food"""
 
@@ -28,7 +42,7 @@ class Pizza(models.Model):
     dislikes = models.IntegerField(blank=True, default=0)
 
     # Pizza properties
-    crust = models.CharField(max_length=20)
+    crust = models.ForeignKey('Crust', on_delete='cascade')
     ingredients = models.ManyToManyField('Ingredient')
     name = models.CharField(max_length=40, unique=True)
 

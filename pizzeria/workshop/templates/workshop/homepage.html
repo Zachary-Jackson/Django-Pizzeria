@@ -12,11 +12,16 @@
 
           {% for pizza in latest_pizzas %}
             <div class="border rounded bg-light mt-2">
-              <h3 class="mb-0">{{ pizza.name }}</h3>
+              <a href="{% url 'workshop:view_pizza' pk=pizza.id %}"
+                 style="color: black;">
+                <h3 class="mb-0">
+                  {{ pizza.name }}
+                </h3>
+              </a>
               <p class="mb-2">{{ pizza.city }}, {{ pizza.state }}</p>
               <p class="mb-0">{{ pizza.summary|truncatechars:40 }}</p>
-              <p class="mt-0">Created {{ pizza.time_created|timesince }}
-                ago.</p>
+              <p class="mt-0">Updated {{ pizza.time_created|timesince }} ago.
+              </p>
             </div>
           {% endfor %}
 

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Ingredient, Pizza
+from .models import Crust, Ingredient, Pizza
 
 
 class WorkShopTests(TestCase):
@@ -20,13 +20,14 @@ class WorkShopTests(TestCase):
         # Create some ingredients for testing
         self.ingredient = Ingredient.objects.create(name='Olives')
         self.ingredient_2 = Ingredient.objects.create(name='Peperoni')
+        self.crust = Crust.objects.create(type='Thin')
 
         self.pizza = Pizza.objects.create(
             city='Knoxville',
             state='TN',
             likes=5,
             dislikes=1,
-            crust='Thin',
+            crust=self.crust,
             name='The Knoxvillian',
             summary='The Knoxville style pizza.',
         )
@@ -142,7 +143,7 @@ class WorkShopTests(TestCase):
             'name': 'Black olive and pepperoni',
             'city': 'Olive',
             'state': 'NY',
-            'crust': 'thin',
+            'crust': 1,  # ForeignKeys Get added by ID numbers
             'ingredients': [1, 2],  # Many to Many fields get added by ID
             'summary': 'Is this a real town?'
         }
