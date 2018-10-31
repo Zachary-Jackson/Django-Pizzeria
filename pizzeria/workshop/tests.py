@@ -18,9 +18,9 @@ class WorkShopTests(TestCase):
         )
 
         # Create some ingredients for testing
-        self.ingredient = Ingredient.objects.create(name='Olives')
-        self.ingredient_2 = Ingredient.objects.create(name='Peperoni')
-        self.crust = Crust.objects.create(type='Thin')
+        self.ingredient = Ingredient.objects.create(name='Pineapple')
+        self.ingredient_2 = Ingredient.objects.create(name='Sausage')
+        self.crust = Crust.objects.create(type='Extra Thin')
 
         self.pizza = Pizza.objects.create(
             city='Knoxville',
@@ -140,7 +140,7 @@ class WorkShopTests(TestCase):
 
         # Create data to POST to the server
         post_data = {
-            'name': 'Black olive and pepperoni',
+            'name': 'Pineapple and pepperoni',
             'city': 'Olive',
             'state': 'NY',
             'crust': 1,  # ForeignKeys Get added by ID numbers
@@ -154,7 +154,7 @@ class WorkShopTests(TestCase):
 
         # Check the last Ingredient object to see if it matches the POSTed data
         pizza = Pizza.objects.last()
-        self.assertEqual('Black olive and pepperoni', pizza.name)
+        self.assertEqual('Pineapple and pepperoni', pizza.name)
 
         # The user should have been redirected
         self.assertRedirects(resp, reverse('workshop:homepage'))
@@ -184,7 +184,7 @@ class WorkShopTests(TestCase):
         # All of the Pizza information should have been loaded to the page
         self.assertContains(resp, 'Knoxville, TN')
         self.assertContains(resp, 'Summary: The Knoxville style pizza.')
-        self.assertContains(resp, 'Crust: Thin')
-        self.assertContains(resp, 'Ingredients: Olives, Peperoni')
+        self.assertContains(resp, 'Crust: Extra Thin')
+        self.assertContains(resp, 'Ingredients: Pineapple, Sausage')
         self.assertContains(resp, 'Likes: 5')
         self.assertContains(resp, 'Dislikes: 1')
