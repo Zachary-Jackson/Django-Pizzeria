@@ -48,7 +48,7 @@ class Pizza(models.Model):
 
     # Miscellaneous
     summary = models.CharField(max_length=200)
-    time_created = models.DateTimeField(auto_now=True)
+    time_created = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
         """Determines where a Pizza object's 'homepage' is"""

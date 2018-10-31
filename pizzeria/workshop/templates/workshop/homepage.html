@@ -20,7 +20,7 @@
               </a>
               <p class="mb-2">{{ pizza.city }}, {{ pizza.state }}</p>
               <p class="mb-0">{{ pizza.summary|truncatechars:40 }}</p>
-              <p class="mt-0">Updated {{ pizza.time_created|timesince }} ago.
+              <p class="mt-0">Created {{ pizza.time_created|timesince }} ago.
               </p>
             </div>
           {% endfor %}

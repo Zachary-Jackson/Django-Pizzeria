@@ -1,11 +1,94 @@
 from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.urls import reverse
 
+from .forms import  IngredientForm, PizzaForm
 from .models import Crust, Ingredient, Pizza
 
 
-class WorkShopTests(TestCase):
+class WorkShopModelTests(TestCase):
+    """Checks to see if Models behave properly."""
+
+    def create_crust_object(self):
+        """Creates a Crust object for testing"""
+        return Crust.objects.create(type='Extra Thick')
+
+    def create_ingredient_object(self):
+        """Creates a Ingredient object for testing"""
+        return Ingredient.objects.create(name='Onion')
+
+    def create_pizza_object(self):
+        """Creates a Pizza object for testing"""
+        return Pizza.objects.create(
+            city='Knoxville',
+            state='TN',
+            crust=self.create_crust_object(),
+            name='Test Pizza',
+            summary='Testing this pizza',
+        )
+
+    """Crust tests"""
+
+    def test_crust_creation(self):
+        """Ensures a Crust can be created"""
+        crust = self.create_crust_object()
+        self.assertIsInstance(crust, Crust)
+
+    def test_crust_not_unique(self):
+        """Checks if a second crust of the same type can be created"""
+        self.create_crust_object()
+
+        with self.assertRaises(IntegrityError):
+            self.create_crust_object()
+
+    """Ingredient tests"""
+
+    def test_ingredient_creation(self):
+        """Ensures an Ingredient can be created"""
+        ingredient = self.create_ingredient_object()
+        self.assertIsInstance(ingredient, Ingredient)
+
+    def test_ingredient_not_unique(self):
+        """Checks if a second Ingredient of the same name can be created"""
+        self.create_ingredient_object()
+
+        with self.assertRaises(IntegrityError):
+            self.create_ingredient_object()
+
+    """Pizza tests"""
+
+    def test_pizza_creation(self):
+        """Ensures a Pizza can be created"""
+        pizza = self.create_pizza_object()
+
+        # Ensure that an ingredient can be created
+        ingredient = self.create_ingredient_object()
+        pizza.ingredients.add(ingredient)
+        pizza.save()
+
+        self.assertIsInstance(pizza, Pizza)
+
+    def test_pizza_default_categories(self):
+        """Checks to see if the extra pizza categories have been created"""
+        pizza = self.create_pizza_object()
+
+        self.assertEqual(0, pizza.likes)
+        self.assertEqual(0, pizza.dislikes)
+
+
+class WorkShopFormTests(TestCase):
+    """Ensures that all of the forms work properly"""
+
+    def test_ingredientform_valid(self):
+        """Ensures that an ingredient can be created"""
+        data = {'name': 'Green Bell Peppers'}
+        form = IngredientForm(data=data)
+
+        self.assertTrue(form.is_valid())
+
+
+class WorkShopViewTests(TestCase):
     """Tests for the WorkShop app"""
 
     def setUp(self):
