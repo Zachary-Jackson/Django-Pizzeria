@@ -19,9 +19,9 @@ def add_default_pizzas(apps, schema_editor):
         likes=5,
         dislikes=1,
         crust=crust.objects.get(pk=5),
-        name='Chicago-style',
+        name='Chicago-Style',
         summary=(
-            'A very thick crusted deep-dish pizza, that is almost like a pie'
+            'A very thick crusted deep-dish pizza, that is almost like a pie.'
         )
     ))
 
@@ -54,9 +54,10 @@ def add_default_pizzas(apps, schema_editor):
 
     # Chicago-style
     pizza.objects.get(pk=1).ingredients.add(
-        ingredient.objects.get(pk=1),
         ingredient.objects.get(pk=2),
+        ingredient.objects.get(pk=4),
         ingredient.objects.get(pk=5),
+        ingredient.objects.get(pk=6),
     )
 
     # Anchovies pizza

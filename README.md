@@ -3,6 +3,11 @@
 Built for a presentation, this pizza based social media site is designed to 
 teach the basics of Django.
 
+There are some things that would need to be done in order to make the project
+"production" ready, like not allowing anyone to delete pizzas, and reducing
+extra Query calls in the template. However, for the purposes of an introduction
+this will suffice.
+
 ## Starting
 
 1) Create a virtualenv and install the project requirements, which are listed in
