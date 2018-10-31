@@ -35,6 +35,10 @@ class WorkShopTests(TestCase):
         # M2M objects must be added after creation
         self.pizza.ingredients.add(self.ingredient, self.ingredient_2)
 
+        # Because of some custom migrations, we need to keep track of how
+        # many pizzas their are
+        self.number_of_pizzas = len(Pizza.objects.all())
+
     def test_homepage_get(self):
         """Ensures that create_account shows the correct information"""
 
@@ -168,8 +172,8 @@ class WorkShopTests(TestCase):
             reverse('workshop:delete_pizza', kwargs={'pk': 1})
         )
 
-        # Ensure that no Pizzas are in the database
-        self.assertEqual(0, len(Pizza.objects.all()))
+        # Ensure that we have no pizzas outside of default migrations
+        self.assertEqual(self.number_of_pizzas - 1, len(Pizza.objects.all()))
 
         # The user should have been redirect to the homepage
         self.assertRedirects(resp, reverse('workshop:homepage'))
@@ -178,7 +182,7 @@ class WorkShopTests(TestCase):
         """Checks how the page looks for a user"""
 
         resp = self.client.get(
-            reverse('workshop:view_pizza', kwargs={'pk': 1})
+            reverse('workshop:view_pizza', kwargs={'pk': self.pizza.pk})
         )
 
         # All of the Pizza information should have been loaded to the page

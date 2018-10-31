@@ -75,6 +75,7 @@ def delete_pizza(request, pk: int):
     :param pk: Primary key for a Pizza object
     :return: Delete Pizza and redirect to 'workshop:homepage'
     """
+
     pizza = get_object_or_404(Pizza, pk=pk)
 
     # Create delete message
