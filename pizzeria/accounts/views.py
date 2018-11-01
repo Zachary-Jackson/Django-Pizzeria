@@ -42,7 +42,7 @@ def login_user(request):
 
     :param request: Standard Django request object
     :return if GET request: render 'accounts:login'
-    :return if successful POST request:
+    :return if successful POST:
         Login User and return redirect 'workshop:homepage'
     """
     form = AuthenticationForm

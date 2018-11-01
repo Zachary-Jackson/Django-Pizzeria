@@ -3,67 +3,49 @@ from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.urls import reverse
 
-from .forms import  IngredientForm, PizzaForm
+from .forms import IngredientForm, PizzaForm
 from .models import Crust, Ingredient, Pizza
 
 
 class WorkShopModelTests(TestCase):
     """Checks to see if Models behave properly."""
 
-    def create_crust_object(self):
-        """Creates a Crust object for testing"""
-        return Crust.objects.create(type='Extra Thick')
-
-    def create_ingredient_object(self):
-        """Creates a Ingredient object for testing"""
-        return Ingredient.objects.create(name='Onion')
-
-    def create_pizza_object(self):
-        """Creates a Pizza object for testing"""
-        return Pizza.objects.create(
-            city='Knoxville',
-            state='TN',
-            crust=self.create_crust_object(),
-            name='Test Pizza',
-            summary='Testing this pizza',
-        )
-
     """Crust tests"""
 
     def test_crust_creation(self):
         """Ensures a Crust can be created"""
-        crust = self.create_crust_object()
+        crust = ModelCreator.create_crust_object()
         self.assertIsInstance(crust, Crust)
 
     def test_crust_not_unique(self):
         """Checks if a second crust of the same type can be created"""
-        self.create_crust_object()
+        ModelCreator.create_crust_object()
 
         with self.assertRaises(IntegrityError):
-            self.create_crust_object()
+            Crust.objects.create(type='Extra Thick')
 
     """Ingredient tests"""
 
     def test_ingredient_creation(self):
         """Ensures an Ingredient can be created"""
-        ingredient = self.create_ingredient_object()
+        ingredient = ModelCreator.create_ingredient_object()
         self.assertIsInstance(ingredient, Ingredient)
 
     def test_ingredient_not_unique(self):
         """Checks if a second Ingredient of the same name can be created"""
-        self.create_ingredient_object()
+        ModelCreator.create_ingredient_object()
 
         with self.assertRaises(IntegrityError):
-            self.create_ingredient_object()
+            Ingredient.objects.create(name='Onion')
 
     """Pizza tests"""
 
     def test_pizza_creation(self):
         """Ensures a Pizza can be created"""
-        pizza = self.create_pizza_object()
+        pizza = ModelCreator.create_pizza_object()
 
         # Ensure that an ingredient can be created
-        ingredient = self.create_ingredient_object()
+        ingredient = ModelCreator.create_ingredient_object()
         pizza.ingredients.add(ingredient)
         pizza.save()
 
@@ -71,7 +53,7 @@ class WorkShopModelTests(TestCase):
 
     def test_pizza_default_categories(self):
         """Checks to see if the extra pizza categories have been created"""
-        pizza = self.create_pizza_object()
+        pizza = ModelCreator.create_pizza_object()
 
         self.assertEqual(0, pizza.likes)
         self.assertEqual(0, pizza.dislikes)
@@ -81,11 +63,61 @@ class WorkShopFormTests(TestCase):
     """Ensures that all of the forms work properly"""
 
     def test_ingredientform_valid(self):
-        """Ensures that an ingredient can be created"""
+        """Ensures that IngredientForm is valid"""
         data = {'name': 'Green Bell Peppers'}
         form = IngredientForm(data=data)
 
         self.assertTrue(form.is_valid())
+
+    def test_ingredientform_empty(self):
+        """Ensures that an empty form cannot be valid"""
+        data = {'name': ''}
+        form = IngredientForm(data=data)
+
+        self.assertFalse(form.is_valid())
+
+    def test_ingredientform_clean_name_titlecased(self):
+        """Verifies that the form title cases the name"""
+        data = {'name': 'green bell peppers'}
+        form = IngredientForm(data=data)
+
+        # 'green bell peppers' should now be title cased
+        form.full_clean()
+        self.assertEqual('Green Bell Peppers', form.clean()['name'])
+
+    def test_pizzaform_valid(self):
+        """Ensures that the PizzaForm is valid"""
+        crust = ModelCreator.create_crust_object()
+        ingredient = ModelCreator.create_ingredient_object()
+
+        data = {
+            'city': 'Knoxville',
+            'state': 42,
+            'crust': crust.pk,
+            'name': 'The Knoxvillian',
+            'summary': 'The Knoxville style pizza.',
+            'ingredients': [ingredient.pk]
+        }
+
+        form = PizzaForm(data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_pizzaform_name_summary_empty(self):
+        """Ensures that the PizzaForm is invalid"""
+        crust = ModelCreator.create_crust_object()
+        ingredient = ModelCreator.create_ingredient_object()
+
+        data = {
+            'city': 'Knoxville',
+            'state': 42,
+            'crust': crust.pk,
+            'name': '',
+            'summary': '',
+            'ingredients': [ingredient.pk]
+        }
+
+        form = PizzaForm(data=data)
+        self.assertFalse(form.is_valid())
 
 
 class WorkShopViewTests(TestCase):
@@ -103,17 +135,9 @@ class WorkShopViewTests(TestCase):
         # Create some ingredients for testing
         self.ingredient = Ingredient.objects.create(name='Pineapple')
         self.ingredient_2 = Ingredient.objects.create(name='Sausage')
-        self.crust = Crust.objects.create(type='Extra Thin')
+        self.crust = ModelCreator.create_crust_object()
 
-        self.pizza = Pizza.objects.create(
-            city='Knoxville',
-            state='TN',
-            likes=5,
-            dislikes=1,
-            crust=self.crust,
-            name='The Knoxvillian',
-            summary='The Knoxville style pizza.',
-        )
+        self.pizza = ModelCreator.create_pizza_object()
 
         # M2M objects must be added after creation
         self.pizza.ingredients.add(self.ingredient, self.ingredient_2)
@@ -136,10 +160,10 @@ class WorkShopViewTests(TestCase):
         self.assertContains(resp, 'The finest of cuisines')
 
         # Ensures the Pizza object was loaded to the page
-        self.assertContains(resp, 'The Knoxvillian')
+        self.assertContains(resp, 'Test Pizza')
         self.assertContains(resp, 'Knoxville, TN')
         self.assertContains(resp, '5')
-        self.assertContains(resp, 'The Knoxville style pizza.')
+        self.assertContains(resp, 'Testing this pizza')
 
     def test_dislike_pizza(self):
         """Ensures that a pizza can be disliked"""
@@ -270,8 +294,36 @@ class WorkShopViewTests(TestCase):
 
         # All of the Pizza information should have been loaded to the page
         self.assertContains(resp, 'Knoxville, TN')
-        self.assertContains(resp, 'Summary: The Knoxville style pizza.')
-        self.assertContains(resp, 'Crust: Extra Thin')
+        self.assertContains(resp, 'Summary: Testing this pizza')
+        self.assertContains(resp, 'Crust: Extra Thick')
         self.assertContains(resp, 'Ingredients: Pineapple, Sausage')
-        self.assertContains(resp, 'Likes: 5')
-        self.assertContains(resp, 'Dislikes: 1')
+        self.assertContains(resp, 'Likes: 0')
+        self.assertContains(resp, 'Dislikes: 0')
+
+
+class ModelCreator:
+    """A class designed to produce model Objects for testing"""
+
+    @staticmethod
+    def create_crust_object():
+        """Creates a Crust object for testing"""
+        # .get_or_create makes a tuple, and we only need the object
+        return Crust.objects.get_or_create(type='Extra Thick')[0]
+
+    @staticmethod
+    def create_ingredient_object():
+        """Creates a Ingredient object for testing"""
+        # .get_or_create makes a tuple, and we only need the object
+        return Ingredient.objects.get_or_create(name='Onion')[0]
+
+    @staticmethod
+    def create_pizza_object():
+        """Creates a Pizza object for testing"""
+        # .get_or_create makes a tuple, and we only need the object
+        return Pizza.objects.get_or_create(
+            city='Knoxville',
+            state='TN',
+            crust=ModelCreator.create_crust_object(),
+            name='Test Pizza',
+            summary='Testing this pizza',
+        )[0]
